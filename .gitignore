@@ -37,6 +37,7 @@ build/
 
 ### Environment Variables ###
 .env
+.idea/
 
 ### Mac OS ###
 .DS_Store
