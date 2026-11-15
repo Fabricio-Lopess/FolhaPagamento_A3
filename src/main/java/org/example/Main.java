@@ -1,14 +1,69 @@
 package org.example;
-
+import org.example.connection.DataBaseConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args)
-    {
-        int opcao = menu();
+    static void main(String[] args) {
+
+        // Cria uma lista para armazenar todos os colaboradores
         java.util.List<colaborador> colaboradores = new java.util.ArrayList<>();
+
+
+        // Adiciona todos colaboradores já cadastrados no banco de dados para sua classe e lista
+        try {
+            Connection connection = DataBaseConnection.getInstace().connection();
+            PreparedStatement selectColaborador = connection.prepareStatement("SELECT * FROM colaborador");
+            ResultSet resultSet = selectColaborador.executeQuery();
+            while (resultSet.next()){
+                int matricula = resultSet.getInt("matricula");
+                double salarioBase = resultSet.getDouble("salarioBase");
+                String nome = resultSet.getString("nome");
+                colaboradores.add(new colaborador(matricula, nome, salarioBase));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+
+            // Adiciona todos colaboradores comissionados já cadastrados no banco de dados para sua classe e lista
+        }try {
+            Connection connection = DataBaseConnection.getInstace().connection();
+            PreparedStatement selectColaboradorComissionado = connection.prepareStatement("SELECT * FROM colaborador_comissionado");
+            ResultSet resultSet = selectColaboradorComissionado.executeQuery();
+            while (resultSet.next()){
+                int matricula = resultSet.getInt("matricula");
+                double salarioBase = resultSet.getDouble("salarioBase");
+                String nome = resultSet.getString("nome");
+                double percentualComissao = resultSet.getDouble("percentual_comissao");
+                double valorVendas = resultSet.getDouble("valor_vendas");
+                colaboradores.add(new ColaboradorComissionado(matricula, nome, salarioBase, valorVendas, percentualComissao));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+
+            // Adiciona todos colaboradores produtivos já cadastrados no banco de dados para sua classe e lista
+        }try {
+            Connection connection = DataBaseConnection.getInstace().connection();
+            PreparedStatement selectColaboradorProducao = connection.prepareStatement("SELECT * FROM colaborador_producao");
+            ResultSet resultSet = selectColaboradorProducao.executeQuery();
+            while (resultSet.next()){
+                int matricula = resultSet.getInt("matricula");
+                double salarioBase = resultSet.getDouble("salarioBase");
+                String nome = resultSet.getString("nome");
+                double valorPorPeca = resultSet.getDouble("valor_por_peca");
+                int quantidadePecas = resultSet.getInt("quantidade_pecas");
+                colaboradores.add(new ColaboradorProducao(matricula, nome, salarioBase, quantidadePecas, valorPorPeca));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+
+        int opcao = menu();
 
         while (opcao != 0)
         {
@@ -29,7 +84,7 @@ public class Main {
 
     private static int menu() {
         Scanner scanner = new Scanner(System.in);
-        int opcao = 0;
+        int opcao;
 
         while (true) {
             System.out.println("Menu:");
