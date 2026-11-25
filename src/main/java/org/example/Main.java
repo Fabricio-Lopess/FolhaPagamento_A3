@@ -28,9 +28,10 @@ public class Main {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
 
             // Adiciona todos colaboradores comissionados já cadastrados no banco de dados para sua classe e lista
-        }try {
+        try {
             Connection connection = DataBaseConnection.getInstace().connection();
             PreparedStatement selectColaboradorComissionado = connection.prepareStatement("SELECT * FROM colaborador_comissionado");
             ResultSet resultSet = selectColaboradorComissionado.executeQuery();
@@ -44,9 +45,10 @@ public class Main {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
 
             // Adiciona todos colaboradores produtivos já cadastrados no banco de dados para sua classe e lista
-        }try {
+        try {
             Connection connection = DataBaseConnection.getInstace().connection();
             PreparedStatement selectColaboradorProducao = connection.prepareStatement("SELECT * FROM colaborador_producao");
             ResultSet resultSet = selectColaboradorProducao.executeQuery();
@@ -115,21 +117,44 @@ public class Main {
         int matricula;
         String nome;
         double salarioBase;
+        boolean matriculaExiste = false;
 
         System.out.println("Cadastro de Colaborador:");
 
-        while (true) {
-            System.out.print("Digite a matricula do colaborador: ");
+            System.out.print("Digite a matrícula do colaborador (0 para voltar): ");
             matricula = scanner.nextInt();
-            if (matricula > 0) {
-                break; // Sai do loop se a entrada for um inteiro válido
+
+            // Verifica se o usuário deseja sair
+            if (matricula == 0) {
+                System.out.println("Cadastro cancelado!");
+                return;
             } else {
-                System.out.println("Entrada invalida. Por favor, digite um numero inteiro positivo para a matricula.");
-                scanner.next(); // Limpa a entrada invalida
+
+                do {
+                    // Percorre a lista de colaboradores
+                    for (colaborador colaborador : colaboradores) {
+
+                        // Verifica se a matrícula já existe
+                        if (colaborador.getMatricula() == matricula) {
+                            System.out.println("Matrícula já cadastrada! Digite outra.");
+                            return;
+                        } else {
+                            if (matricula > 0) {
+                                matriculaExiste = true;
+                            } else {
+                                System.out.println("Entrada invalida. Por favor, digite um numero inteiro positivo para a matricula.");
+                                scanner.next(); // Limpa a entrada invalida
+                                return;
+                            }
+                        }
+                    }
+
+                } while (!matriculaExiste);
             }
-        }
+
         while (true) {
             System.out.print("Digite o nome do colaborador: ");
+            scanner.nextLine();
             nome = scanner.nextLine();
             if (!nome.trim().isEmpty()) {
                 break;
@@ -153,7 +178,26 @@ public class Main {
         }
 
         switch (opcao) {
-            case 1 -> colaboradores.add(new ColaboradorPadrao(matricula, nome, salarioBase));
+
+            case 1 -> {
+                try {
+                    Connection connection = DataBaseConnection.getInstace().connection();
+
+                    PreparedStatement insertColaborador = connection.prepareStatement("INSERT INTO public.colaborador (matricula, salarioBase, nome) VALUES (?, ?, ?)"
+                    );
+
+                    insertColaborador.setInt(1, matricula);
+                    insertColaborador.setDouble(2, salarioBase);
+                    insertColaborador.setString(3, nome);
+
+                    insertColaborador.executeUpdate();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                colaboradores.add(new ColaboradorPadrao(matricula, nome, salarioBase));
+
+                System.out.println("Colaborador adicionado!");
+            }
             case 2 -> {
                 double valorVendas;
                 double percentualComissao;
@@ -186,17 +230,34 @@ public class Main {
                         scanner.next(); // Limpa a entrada invalida
                     }
                 }
+                try {
+                    Connection connection = DataBaseConnection.getInstace().connection();
+
+                    PreparedStatement insertColaboradorComissionado = connection.prepareStatement("INSERT INTO public.colaborador_comissionado " +
+                            "(percentual_comissao, matricula, salarioBase, nome, valor_vendas) VALUES (?, ?, ?, ?, ?"
+                    );
+
+                    insertColaboradorComissionado.setDouble(1, percentualComissao);
+                    insertColaboradorComissionado.setInt(2, matricula);
+                    insertColaboradorComissionado.setDouble(3, salarioBase);
+                    insertColaboradorComissionado.setString(4, nome );
+                    insertColaboradorComissionado.setDouble(5, valorVendas);
+
+                    insertColaboradorComissionado.executeUpdate();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
                 colaboradores.add(new ColaboradorComissionado(matricula, nome, salarioBase, valorVendas, percentualComissao));
             }
             case 3 -> {
-                int pecasProduzidas;
+                int quantidadePecas;
                 double valorPorPeca;
 
                 while (true) {
                     System.out.print("Digite o numero de pecas produzidas pelo colaborador: ");
                     if (scanner.hasNextInt()) {
-                        pecasProduzidas = scanner.nextInt();
-                        if (pecasProduzidas >= 0) {
+                        quantidadePecas = scanner.nextInt();
+                        if (quantidadePecas >= 0) {
                             break; // Sai do loop se a entrada for um numero válido
                         } else {
                             System.out.println("Entrada invalida. Por favor, digite um numero inteiro nao negativo para a quantidade de pecas produzidas.");
@@ -220,7 +281,24 @@ public class Main {
                         scanner.next(); // Limpa a entrada invalida
                     }
                 }
-                colaboradores.add(new ColaboradorProducao(matricula, nome, salarioBase, pecasProduzidas, valorPorPeca));
+                try {
+                    Connection connection = DataBaseConnection.getInstace().connection();
+
+                    PreparedStatement insertColaboradorComissionado = connection.prepareStatement("INSERT INTO public.colaborador_producao " +
+                            "(valor_por_peca, matricula, salarioBase, nome, quantidade_pecas) VALUES (?, ?, ?, ?, ?"
+                    );
+
+                    insertColaboradorComissionado.setDouble(1, valorPorPeca);
+                    insertColaboradorComissionado.setInt(2, matricula);
+                    insertColaboradorComissionado.setDouble(3, salarioBase);
+                    insertColaboradorComissionado.setString(4, nome );
+                    insertColaboradorComissionado.setDouble(5, quantidadePecas);
+
+                    insertColaboradorComissionado.executeUpdate();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                colaboradores.add(new ColaboradorProducao(matricula, nome, salarioBase, quantidadePecas, valorPorPeca));
             }
             default -> throw new AssertionError();
         }
