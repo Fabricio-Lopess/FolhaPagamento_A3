@@ -1,6 +1,6 @@
 package org.example;
 
-class ColaboradorProducao extends colaborador {
+public class ColaboradorProducao extends colaborador {
     private int quantidadePecas;
     private double valorPorPeca;
 

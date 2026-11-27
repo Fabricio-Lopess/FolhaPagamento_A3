@@ -1,6 +1,6 @@
 package org.example;
 
-class ColaboradorComissionado extends colaborador {
+public class ColaboradorComissionado extends colaborador {
 
     private double valorVendas;
     private double percentualComissao;
