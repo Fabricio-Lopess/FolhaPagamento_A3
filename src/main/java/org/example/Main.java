@@ -117,7 +117,6 @@ public class Main {
         int matricula;
         String nome;
         double salarioBase;
-        boolean matriculaExiste = false;
 
         System.out.println("Cadastro de Colaborador:");
 
@@ -130,26 +129,17 @@ public class Main {
                 return;
             } else {
 
-                do {
-                    // Percorre a lista de colaboradores
-                    for (colaborador colaborador : colaboradores) {
-
-                        // Verifica se a matrícula já existe
-                        if (colaborador.getMatricula() == matricula) {
-                            System.out.println("Matrícula já cadastrada! Digite outra.");
-                            return;
-                        } else {
-                            if (matricula > 0) {
-                                matriculaExiste = true;
-                            } else {
-                                System.out.println("Entrada invalida. Por favor, digite um numero inteiro positivo para a matricula.");
-                                scanner.next(); // Limpa a entrada invalida
-                                return;
-                            }
-                        }
+                if (matricula < 0) {
+                    System.out.println("Matrícula inválida!");
+                    return;
+                }
+                // Verifica se a matrícula já existe
+                for (colaborador colaborador : colaboradores) {
+                    if (colaborador.getMatricula() == matricula) {
+                        System.out.println("Matrícula já cadastrada! Digite outra.");
+                        return;
                     }
-
-                } while (!matriculaExiste);
+                }
             }
 
         while (true) {
