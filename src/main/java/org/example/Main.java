@@ -234,8 +234,7 @@ public class Main {
                     Connection connection = DataBaseConnection.getInstace().connection();
 
                     PreparedStatement insertColaboradorComissionado = connection.prepareStatement("INSERT INTO public.colaborador_comissionado " +
-                            "(percentual_comissao, matricula, salarioBase, nome, valor_vendas) VALUES (?, ?, ?, ?, ?"
-                    );
+                            "(percentual_comissao, matricula, salarioBase, nome, valor_vendas) VALUES (?, ?, ?, ?, ?)");
 
                     insertColaboradorComissionado.setDouble(1, percentualComissao);
                     insertColaboradorComissionado.setInt(2, matricula);
@@ -284,17 +283,16 @@ public class Main {
                 try {
                     Connection connection = DataBaseConnection.getInstace().connection();
 
-                    PreparedStatement insertColaboradorComissionado = connection.prepareStatement("INSERT INTO public.colaborador_producao " +
-                            "(valor_por_peca, matricula, salarioBase, nome, quantidade_pecas) VALUES (?, ?, ?, ?, ?"
-                    );
+                    PreparedStatement insertColaboradorProducao = connection.prepareStatement("INSERT INTO public.colaborador_producao " +
+                            "(valor_por_peca, matricula, salarioBase, nome, quantidade_pecas) VALUES (?, ?, ?, ?, ?)");
 
-                    insertColaboradorComissionado.setDouble(1, valorPorPeca);
-                    insertColaboradorComissionado.setInt(2, matricula);
-                    insertColaboradorComissionado.setDouble(3, salarioBase);
-                    insertColaboradorComissionado.setString(4, nome );
-                    insertColaboradorComissionado.setDouble(5, quantidadePecas);
+                    insertColaboradorProducao.setDouble(1, valorPorPeca);
+                    insertColaboradorProducao.setInt(2, matricula);
+                    insertColaboradorProducao.setDouble(3, salarioBase);
+                    insertColaboradorProducao.setString(4, nome );
+                    insertColaboradorProducao.setDouble(5, quantidadePecas);
 
-                    insertColaboradorComissionado.executeUpdate();
+                    insertColaboradorProducao.executeUpdate();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
