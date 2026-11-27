@@ -112,7 +112,7 @@ public class Main {
         return opcao;
     }
 
-    private static void CadastraColaborador(List<colaborador> colaboradores, int opcao) {
+    public static void CadastraColaborador(List<colaborador> colaboradores, int opcao) {
         Scanner scanner = new Scanner(System.in);
         int matricula;
         String nome;
@@ -142,28 +142,46 @@ public class Main {
                 }
             }
 
+        // Consome a quebra de linha deixada pelo nextInt()
+        scanner.nextLine();
+
         while (true) {
             System.out.print("Digite o nome do colaborador: ");
-            scanner.nextLine();
+
             nome = scanner.nextLine();
+
             if (!nome.trim().isEmpty()) {
                 break;
             } else {
-                System.out.println("Nome invalido. Por favor, digite um nome nao vazio.");
+                System.out.println(
+                        "Nome invalido. Por favor, digite um nome nao vazio."
+                );
             }
         }
         while (true) {
             System.out.print("Digite o salario base do colaborador: ");
+
+            if (!scanner.hasNext()) {
+                return;
+            }
+
             if (scanner.hasNextDouble()) {
                 salarioBase = scanner.nextDouble();
+
                 if (salarioBase >= 0) {
-                    break; // Sai do loop se a entrada for um numero válido
+                    break;
                 } else {
-                    System.out.println("Entrada invalida. Por favor, digite um numero nao negativo para o salario base.");
+                    System.out.println(
+                            "Entrada invalida. Digite um salario nao negativo."
+                    );
                 }
+
             } else {
-                System.out.println("Entrada invalida. Por favor, digite um numero valido para o salario base.");
-                scanner.next(); // Limpa a entrada invalida
+                System.out.println(
+                        "Entrada invalida. Digite um numero valido para o salario base."
+                );
+
+                scanner.next();
             }
         }
 
