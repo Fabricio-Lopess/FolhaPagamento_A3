@@ -33,4 +33,7 @@ public class colaborador {
         return nome;
     }
 
+    public double getSalarioBase() {
+        return salarioBase;
+    }
 }
